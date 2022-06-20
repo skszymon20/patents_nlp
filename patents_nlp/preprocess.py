@@ -1,11 +1,8 @@
-import pandas as pd
-import transformers
 import torch
-# import numpy as np
-# from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader
+import pandas as pd
+from cfg import CFG
 
-TRAIN_SET = './data/train.csv'
-TEST_SET = './data/test.csv'
 
 # TODO: Is there better way to assign subclasses
 # (differentiate A11 from A12 etc-> possible underfitting)
@@ -21,6 +18,8 @@ codes = {
     'Y': 'Emerging Cross-Sectional Technologi',
 }
 
+dummycols = []
+
 
 def prepare_datatable(table: pd.DataFrame,
                       col_names_returned=['id', 'train', 'score']):
@@ -29,17 +28,19 @@ def prepare_datatable(table: pd.DataFrame,
     table['train'] = table['anchor'] + '[SEP]' + \
         table['target'] + '[SEP]' + table['context_text']
     return table[col_names_returned]
+    # dummytargets = pd.get_dummies(table['score'])
+    # for i in dummytargets:
+    #     table[i] = dummytargets[i]
+    # table = table[col_names_returned + list(dummytargets.columns)]
+    # table.drop(columns=['score'], inplace=True)
+    # global dummycols
+    # dummycols = list(dummytargets.columns)
+    # return table
 
-
-def init_tokenizer(model_name: str, token_max_len: int,
-                   tokenizer=transformers.AutoTokenizer,):
-    return tokenizer.from_pretrained(model_name,
-                                     model_max_length=token_max_len)
 
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, table: pd.DataFrame, tokenizer):
-        'Initialization'
         self.table = table
         self.tokenizer = tokenizer
 
@@ -53,10 +54,42 @@ class Dataset(torch.utils.data.Dataset):
         row = self.table.iloc[index]
 
         # Load data and get label
-        X = self.tokenizer.tokenize(row['train'])
+        X = self.tokenizer(
+            row['train'], padding='max_length',
+            max_length=CFG.tokenizer_max_length, add_special_tokens=True,
+            return_offsets_mapping=False, return_tensors='pt'
+        )
+        for k in X:
+            X[k] = X[k].squeeze()
         y = row['score']
-
         return (X, y)
+
+
+def preprocess(trainset='./data/train.csv', testset='./data/test.csv', command="todatasets", test_size=0.2):
+    train_base = pd.read_csv(trainset)  # len=36473 (rows)
+    test_base = pd.read_csv(testset)  # len=36 (rows)
+    merged = pd.concat([train_base, test_base])  # concatenating both datasets
+    # Cleaning Datatable to format: id, train text
+    # (anchor + target + context_text), score
+    table = prepare_datatable(merged)
+    # Train/Validation split
+    table = table.sample(frac=1, random_state=123)
+    sp0 = int(table.shape[0] * test_size)
+    train, validation = table[:sp0], table[sp0:]
+    # Initialize some tokenizer
+    tokenizer = CFG.tokenizer
+    # Dataset initialization and test
+    train_s = Dataset(train, tokenizer)
+    val_s = Dataset(validation, tokenizer)
+    if command == 'todatasets':
+        return train_s, val_s
+    elif command == 'todataloaders':
+        train_dl = DataLoader(train_s, batch_size=CFG.batch_size, shuffle=True)  # check num workers
+        valid_dl = DataLoader(val_s, batch_size=CFG.batch_size, shuffle=True)
+        return train_dl, valid_dl
+    else:
+        raise ValueError('command must be "todatasets" or "todataloaders"')
+
 
 
 """
