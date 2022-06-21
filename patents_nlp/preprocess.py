@@ -22,10 +22,10 @@ dummycols = []
 
 
 def prepare_datatable(table: pd.DataFrame,
-                      col_names_returned=['id', 'train', 'score']):
+                      col_names_returned=['id', 'text', 'score']):
     table['context'].replace(r'\d\d', '', regex=True, inplace=True)
     table['context_text'] = table['context'].map(codes)
-    table['train'] = table['anchor'] + '[SEP]' + \
+    table['text'] = table['anchor'] + '[SEP]' + \
         table['target'] + '[SEP]' + table['context_text']
     return table[col_names_returned]
     # dummytargets = pd.get_dummies(table['score'])
@@ -64,17 +64,26 @@ class Dataset(torch.utils.data.Dataset):
         y = row['score']
         return (X, y)
 
+def preprocess_test(filename='./data/test.csv', command="todataloader"):
+    test_base = pd.read_csv(filename)  # len=36 rows
+    table = prepare_datatable(["id", "text"])
+    test_ds = Dataset(test_base, CFG.tokenizer)
+    if command == 'todataset':
+        return test_ds
+    elif command == 'todataloader':
+        test_dl = DataLoader(test_ds, batch_size=CFG.batch_size, shuffle=False)
+        return test_dl
+    else:
+        raise ValueError('command must be "todataset" or "todataloader"')
 
-def preprocess(trainset='./data/train.csv', testset='./data/test.csv', command="todatasets", test_size=0.2):
-    train_base = pd.read_csv(trainset)  # len=36473 (rows)
-    test_base = pd.read_csv(testset)  # len=36 (rows)
-    merged = pd.concat([train_base, test_base])  # concatenating both datasets
+def preprocess_train(filename='./data/train.csv', command="todataloaders", valid_size=0.2):
+    train_base = pd.read_csv(filename)  # len=36473 (rows)
     # Cleaning Datatable to format: id, train text
     # (anchor + target + context_text), score
-    table = prepare_datatable(merged)
+    table = prepare_datatable(train_base)
     # Train/Validation split
     table = table.sample(frac=1, random_state=123)
-    sp0 = int(table.shape[0] * test_size)
+    sp0 = int(table.shape[0] * valid_size)
     train, validation = table[:sp0], table[sp0:]
     # Initialize some tokenizer
     tokenizer = CFG.tokenizer
@@ -89,35 +98,3 @@ def preprocess(trainset='./data/train.csv', testset='./data/test.csv', command="
         return train_dl, valid_dl
     else:
         raise ValueError('command must be "todatasets" or "todataloaders"')
-
-
-
-"""
-# Road 2 datasets
-train_base = pd.read_csv(TRAIN_SET)  # len=36473 (rows)
-test_base = pd.read_csv(TEST_SET)  # len=36 (rows)
-
-merged = pd.concat([train_base, test_base])  # concatenating both datasets
-
-# Cleaning Datatable to format: id, train text
-# (anchor + target + context_text), score
-table = prepare_datatable(merged)
-
-# Train/Validation split
-train, validation = train_test_split(merged, test_size=0.2)
-
-# Initialize some tokenizer
-tokenizer = init_tokenizer('bert-base-uncased', 100,
-                           tokenizer=transformers.AutoTokenizer)
-
-# Tokenizer test
-print(tokenizer.tokenize('abatement[SEP]forest region[SEP]Human Necessities'))
-
-# Dataset initialization and test
-train_s = Dataset(train, tokenizer)
-val_s = Dataset(validation, tokenizer)
-
-t = train_s.__getitem__(0)
-v = val_s.__getitem__(0)
-print(t, v)
-"""

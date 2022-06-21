@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from transformers import AutoModel
 import torch
 from cfg import CFG
-from preprocess import preprocess
+from preprocess import preprocess_train
 
 
 class MyModel(nn.Module):
@@ -32,6 +32,6 @@ class MyModel(nn.Module):
 
 if __name__ == "__main__":
     model = MyModel()
-    traindl, validdl = preprocess(command='todataloaders')
+    traindl, validdl = preprocess_train(command='todataloaders')
     res = model(traindl.dataset[0])
     print(res)

@@ -1,7 +1,7 @@
 from torch.optim import Adam, SGD, AdamW
 from patents_nlp.cfg import CFG
 from patents_nlp.model import MyModel
-from preprocess import Dataset, preprocess
+from preprocess import Dataset, preprocess_train
 from torch.utils.data import DataLoader
 import time
 import copy
@@ -41,6 +41,9 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_personr = 0.0
+    sigmoid = torch.nn.Sigmoid()
+    bcelosses = {"train": [], "val": []}
+    pearsonrlosses = {"train": [], "val": []}
 
     for epoch in range(num_epochs):
         print(f'Epoch {epoch}/{num_epochs - 1}')
@@ -69,22 +72,30 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)
-                    preds = torch.nn.Sigmoid()(outputs)
-                    loss = criterion(outputs, labels.view(-1, CFG.nlastlinear))
-
+                    preds = sigmoid(outputs)
+                    labels = labels.view(-1, CFG.nlastlinear)
+                    loss = criterion(outputs, labels)
                     # backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
                 running_loss += loss.item() * labels.shape[0]
-                allpreds = np.concatenate((allpreds, preds.cpu().numpy()))
-                alllabels = np.concatenate((alllabels, labels.cpu().numpy()))
+                if not allpreds.size:
+                    allpreds = preds.detach().cpu().numpy()
+                else:
+                    allpreds = np.concatenate((allpreds, preds.cpu().detach().numpy()))
+                if not alllabels.size:
+                    alllabels = labels.detach().cpu().numpy()
+                else:
+                    alllabels = np.concatenate((alllabels, labels.cpu().detach().numpy()))
 
             if phase == 'train':
                 scheduler.step()
 
             epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_personr = pearsonr(allpreds, alllabels)[0]
+            bcelosses[phase].append(epoch_loss)
+            epoch_personr = pearsonr(allpreds.flatten(), alllabels.flatten())[0]  # there is single output of linear -> flatten
+            pearsonrlosses[phase].append(epoch_personr)
 
             print(f'{phase} Loss: {epoch_loss:.4f} Pearsonr: {epoch_personr:.4f}')
 
@@ -101,7 +112,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model
+    return model, bcelosses, pearsonrlosses
 
 
 def setup_training(traindl, validdl):
@@ -119,5 +130,5 @@ def setup_training(traindl, validdl):
 
 
 if __name__ == "__main__":
-    traindl, validdl = preprocess(command="todataloaders")
-    train(traindl, validdl)
+    traindl, validdl = preprocess_train(command="todataloaders")
+    setup_training(traindl, validdl)

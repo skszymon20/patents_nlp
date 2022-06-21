@@ -17,6 +17,6 @@ class CFG:
     betas = (0.9, 0.999)
     num_warmup_steps = 0
     num_cycles = 0.5
-    num_epochs = 25
+    num_epochs = 5
     batch_size = 16
     tokenizer_max_length = 64  # max length found in the whole dataset was 58
