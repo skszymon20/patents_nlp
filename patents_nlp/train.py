@@ -1,4 +1,5 @@
 from torch.optim import Adam, SGD, AdamW
+import wandb
 from patents_nlp.cfg import CFG
 from patents_nlp.model import MyModel
 from preprocess import Dataset, preprocess_train
@@ -61,6 +62,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             allpreds = np.array([])
             alllabels = np.array([])
             # Iterate over data.
+            print(dataloaders.keys())
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
@@ -79,6 +81,8 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
+                if CFG.wandb:
+                    wandb.log({f'step_loss_{phase}': loss.item()})
                 running_loss += loss.item() * labels.shape[0]
                 if not allpreds.size:
                     allpreds = preds.detach().cpu().numpy()
@@ -96,6 +100,8 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             bcelosses[phase].append(epoch_loss)
             epoch_personr = pearsonr(allpreds.flatten(), alllabels.flatten())[0]  # there is single output of linear -> flatten
             pearsonrlosses[phase].append(epoch_personr)
+            if CFG.wandb:
+                wandb.log({f"epoch_personr_{phase}": epoch_personr})
 
             print(f'{phase} Loss: {epoch_loss:.4f} Pearsonr: {epoch_personr:.4f}')
 
@@ -125,7 +131,13 @@ def setup_training(traindl, validdl):
     optimizer = AdamW(optimizer_parameters, lr=CFG.encoder_lr, eps=CFG.eps, betas=CFG.betas)
     num_train_steps = int(len(traindl) / CFG.batch_size * CFG.num_epochs)
     scheduler = get_scheduler(CFG, optimizer, num_train_steps)
-    return (model, CFG.criterion, optimizer, scheduler, dataloaders,
+    if CFG.criterion == "BCEWithLogitsLoss":
+        criterion = torch.nn.BCEWithLogitsLoss(reduction='mean')
+    else:
+        raise ValueError("criterion should be BCEWithLogitsLoss")
+    if CFG.wandb:
+        wandb.watch(model, log_freq=100)
+    return (model, criterion, optimizer, scheduler, dataloaders,
             dataset_sizes, device, CFG.num_epochs)
 
 

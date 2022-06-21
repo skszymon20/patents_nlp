@@ -1,7 +1,9 @@
 import torch
 from torch.utils.data import DataLoader
 import pandas as pd
+from transformers import AutoTokenizer
 from cfg import CFG
+import warnings
 
 
 # TODO: Is there better way to assign subclasses
@@ -18,8 +20,6 @@ codes = {
     'Y': 'Emerging Cross-Sectional Technologi',
 }
 
-dummycols = []
-
 
 def prepare_datatable(table: pd.DataFrame,
                       col_names_returned=['id', 'text', 'score']):
@@ -28,14 +28,6 @@ def prepare_datatable(table: pd.DataFrame,
     table['text'] = table['anchor'] + '[SEP]' + \
         table['target'] + '[SEP]' + table['context_text']
     return table[col_names_returned]
-    # dummytargets = pd.get_dummies(table['score'])
-    # for i in dummytargets:
-    #     table[i] = dummytargets[i]
-    # table = table[col_names_returned + list(dummytargets.columns)]
-    # table.drop(columns=['score'], inplace=True)
-    # global dummycols
-    # dummycols = list(dummytargets.columns)
-    # return table
 
 
 
@@ -55,19 +47,25 @@ class Dataset(torch.utils.data.Dataset):
 
         # Load data and get label
         X = self.tokenizer(
-            row['train'], padding='max_length',
+            row['text'], padding='max_length',
             max_length=CFG.tokenizer_max_length, add_special_tokens=True,
             return_offsets_mapping=False, return_tensors='pt'
         )
         for k in X:
             X[k] = X[k].squeeze()
-        y = row['score']
+        if 'score' not in row.index:
+            warnings.warn("y will be set to None as score column was no in the input dataframe.\
+                It is expected if You are making test dataset.")
+            y = None
+        else:
+            y = row['score']
         return (X, y)
 
 def preprocess_test(filename='./data/test.csv', command="todataloader"):
     test_base = pd.read_csv(filename)  # len=36 rows
     table = prepare_datatable(["id", "text"])
-    test_ds = Dataset(test_base, CFG.tokenizer)
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
+    test_ds = Dataset(table, tokenizer)
     if command == 'todataset':
         return test_ds
     elif command == 'todataloader':
@@ -86,7 +84,7 @@ def preprocess_train(filename='./data/train.csv', command="todataloaders", valid
     sp0 = int(table.shape[0] * valid_size)
     train, validation = table[:sp0], table[sp0:]
     # Initialize some tokenizer
-    tokenizer = CFG.tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
     # Dataset initialization and test
     train_s = Dataset(train, tokenizer)
     val_s = Dataset(validation, tokenizer)

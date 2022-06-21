@@ -1,14 +1,7 @@
-from torch.nn import BCEWithLogitsLoss, MSELoss
-from transformers import BertModel, BertTokenizer
-
-
 class CFG:
-    nlastlinear = 1
     model_name = 'bert-base-uncased'
-    encoder = BertModel.from_pretrained(model_name)
-    tokenizer = BertTokenizer.from_pretrained(model_name)
     dropout = 0.1
-    criterion = BCEWithLogitsLoss(reduction='mean')
+    criterion = 'BCEWithLogitsLoss'
     hidden_size = 768
     scheduler = 'cosine'
     encoder_lr = 2e-5
@@ -20,3 +13,5 @@ class CFG:
     num_epochs = 5
     batch_size = 16
     tokenizer_max_length = 64  # max length found in the whole dataset was 58
+    nlastlinear = 1
+    wandb = False

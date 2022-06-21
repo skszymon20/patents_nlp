@@ -10,7 +10,7 @@ from preprocess import preprocess_train
 class MyModel(nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        self.model = CFG.encoder
+        self.model = AutoModel.from_pretrained(CFG.model_name)
         self.attention = nn.Sequential(
             nn.Linear(CFG.hidden_size, 512),
             nn.Tanh(),
