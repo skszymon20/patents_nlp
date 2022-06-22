@@ -3,7 +3,6 @@ import torch
 import numpy as np
 from patents_nlp.cfg import CFG
 from patents_nlp.preprocess import preprocess_test
-import pandas as pd
 
 
 def predict(model, dataloader, device):
