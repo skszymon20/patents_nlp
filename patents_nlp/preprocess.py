@@ -63,7 +63,7 @@ class Dataset(torch.utils.data.Dataset):
 
 def preprocess_test(filename='./data/test.csv', command="todataloader"):
     test_base = pd.read_csv(filename)  # len=36 rows
-    table = prepare_datatable(["id", "text"])
+    table = prepare_datatable(test_base, ["id", "text"])
     tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
     test_ds = Dataset(table, tokenizer)
     if command == 'todataset':
@@ -81,7 +81,7 @@ def preprocess_train(filename='./data/train.csv', command="todataloaders", valid
     table = prepare_datatable(train_base)
     # Train/Validation split
     table = table.sample(frac=1, random_state=123)
-    sp0 = int(table.shape[0] * valid_size)
+    sp0 = int(table.shape[0] * (1-valid_size))
     train, validation = table[:sp0], table[sp0:]
     # Initialize some tokenizer
     tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)

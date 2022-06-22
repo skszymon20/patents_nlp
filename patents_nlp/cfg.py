@@ -14,4 +14,4 @@ class CFG:
     batch_size = 16
     tokenizer_max_length = 64  # max length found in the whole dataset was 58
     nlastlinear = 1
-    wandb = False
+    wandb = True

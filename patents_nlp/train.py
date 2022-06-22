@@ -62,7 +62,6 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             allpreds = np.array([])
             alllabels = np.array([])
             # Iterate over data.
-            print(dataloaders.keys())
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
@@ -100,9 +99,10 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             bcelosses[phase].append(epoch_loss)
             epoch_personr = pearsonr(allpreds.flatten(), alllabels.flatten())[0]  # there is single output of linear -> flatten
             pearsonrlosses[phase].append(epoch_personr)
+            
             if CFG.wandb:
                 wandb.log({f"epoch_personr_{phase}": epoch_personr})
-
+                wandb.log(f"epoch_loss_{phase}": epoch_loss)
             print(f'{phase} Loss: {epoch_loss:.4f} Pearsonr: {epoch_personr:.4f}')
 
             # deep copy the model
