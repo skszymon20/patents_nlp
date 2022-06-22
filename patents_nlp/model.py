@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 from transformers import AutoModel
 import torch
 from patents_nlp.cfg import CFG
