@@ -54,9 +54,9 @@ class Dataset(torch.utils.data.Dataset):
         for k in X:
             X[k] = X[k].squeeze()
         if 'score' not in row.index:
-            warnings.warn("y will be set to None as score column was no in the input dataframe.\
+            warnings.warn("y will be set to empty tensor as score column was no in the input dataframe.\
                 It is expected if You are making test dataset.")
-            y = None
+            y = torch.tensor([])
         else:
             y = row['score']
         return (X, y)

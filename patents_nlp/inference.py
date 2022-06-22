@@ -12,6 +12,7 @@ def predict(model, dataloader, device):
     model.eval()   # Set model to evaluate mode
 
     allpreds = np.array([])
+    alllabels = np.array([])
     # Iterate over data.
     for inputs, labels in dataloader:
         for k in inputs:
