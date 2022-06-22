@@ -62,7 +62,8 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             alllabels = np.array([])
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
-                inputs = inputs.to(device)
+                for k in inputs:
+                    inputs[k] = inputs[k].to(device)
                 labels = labels.to(device)
 
                 # zero the parameter gradients

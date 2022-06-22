@@ -5,8 +5,8 @@ from patents_nlp.cfg import CFG
 import wandb
 import torch
 
-model_names = ['distilbert-base-uncased', 'bert-base-uncased', 'deberta-base']
-for model_name in model_names:
+model_names = ['distilbert-base-uncased', 'bert-base-uncased', 'microsoft/deberta-v3-base']
+for model_name in [model_names[-1]]:
     print(f"model_name: {model_name}")
     CFG.model_name = model_name
     cfg_dict = {key: value for key, value in CFG.__dict__.items() if not key.startswith('__') and not callable(key)}

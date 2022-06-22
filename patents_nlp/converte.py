@@ -28,5 +28,3 @@ def to_single_pyfile(infolder="./patents_nlp/", outfile="./allscript.py"):
                         if splitline[0] == 'if' and splitline[1][:8] == "__name__":
                             break
                         outf.write(line)
-
-to_single_pyfile()

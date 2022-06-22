@@ -14,7 +14,8 @@ def predict(model, dataloader, device):
     allpreds = np.array([])
     # Iterate over data.
     for inputs, labels in dataloader:
-        inputs = inputs.to(device)
+        for k in inputs:
+            inputs[k] = inputs[k].to(device)
         with torch.set_grad_enabled(False):
             outputs = model(inputs)
             preds = sigmoid(outputs)

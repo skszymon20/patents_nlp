@@ -11,10 +11,10 @@ class CFG:
     num_warmup_steps = 0
     num_cycles = 0.5
     num_epochs = 5
-    batch_size = 16
+    batch_size = 16  # was 16
     tokenizer_max_length = 64  # max length found in the whole dataset was 58
     nlastlinear = 1
-    wandb = True
+    wandb = False
     train_location = './data/train.csv'
     test_location = './data/test.csv'
     submission_location = './data/mysubmission.csv'

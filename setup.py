@@ -12,7 +12,8 @@ setup(
         'pandas==1.4.2',
         'pycodestyle==2.8.0',
         'mypy==0.950',
-        'wandb==0.12.16'
+        'wandb==0.12.16',
+        'sentencepiece'
     ],
     setup_requires=['pycodestyle'],
     tests_require=['pytest'],
