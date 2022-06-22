@@ -102,7 +102,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
             
             if CFG.wandb:
                 wandb.log({f"epoch_personr_{phase}": epoch_personr})
-                wandb.log(f"epoch_loss_{phase}": epoch_loss)
+                wandb.log({f"epoch_loss_{phase}": epoch_loss})
             print(f'{phase} Loss: {epoch_loss:.4f} Pearsonr: {epoch_personr:.4f}')
 
             # deep copy the model

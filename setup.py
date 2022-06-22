@@ -10,10 +10,9 @@ setup(
     install_requires=[
         'transformers==4.18.0',
         'pandas==1.4.2',
-        'flake8==4.0.1',
+        'pycodestyle==2.8.0',
         'mypy==0.950',
-        'pycodestyle',
-        'wandb'
+        'wandb==0.12.16'
     ],
     setup_requires=['pycodestyle'],
     tests_require=['pytest'],
