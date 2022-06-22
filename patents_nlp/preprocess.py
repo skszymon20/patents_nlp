@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 import pandas as pd
 from transformers import AutoTokenizer
-from cfg import CFG
+from patents_nlp.cfg import CFG
 import warnings
 
 
@@ -61,15 +61,19 @@ class Dataset(torch.utils.data.Dataset):
             y = row['score']
         return (X, y)
 
-def preprocess_test(filename='./data/test.csv', command="todataloader"):
+def preprocess_test(filename='./data/test.csv', command="todataloader", return_df=False):
     test_base = pd.read_csv(filename)  # len=36 rows
     table = prepare_datatable(test_base, ["id", "text"])
     tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
     test_ds = Dataset(table, tokenizer)
     if command == 'todataset':
+        if return_df:
+            return test_ds, table
         return test_ds
     elif command == 'todataloader':
         test_dl = DataLoader(test_ds, batch_size=CFG.batch_size, shuffle=False)
+        if return_df:
+            return test_dl, table
         return test_dl
     else:
         raise ValueError('command must be "todataset" or "todataloader"')

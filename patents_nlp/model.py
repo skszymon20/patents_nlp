@@ -1,10 +1,9 @@
-from turtle import forward
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import AutoModel
 import torch
-from cfg import CFG
-from preprocess import preprocess_train
+from patents_nlp.cfg import CFG
+from patents_nlp.preprocess import preprocess_train
 
 
 class MyModel(nn.Module):

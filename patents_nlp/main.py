@@ -1,7 +1,7 @@
-from preprocess import preprocess_train
-from train import train_model, setup_training
+from patents_nlp.preprocess import preprocess_train
+from patents_nlp.train import train_model, setup_training
 import json
-from cfg import CFG
+from patents_nlp.cfg import CFG
 import wandb
 import torch
 
@@ -13,7 +13,7 @@ for model_name in model_names:
     if CFG.wandb:
         wandb.init(project="patents-nlp-bert", entity='3ai', config=cfg_dict, name=f"First test model: {model_name}")
 
-    traindl, validdl = preprocess_train(command='todataloaders')
+    traindl, validdl = preprocess_train(CFG.train_location, command='todataloaders')
     mysetup = setup_training(traindl, validdl)
     model, bcelosses, pearsonrlosses = train_model(*mysetup)
     torch.save(model.state_dict(), f'{model_name}_weights.pt')

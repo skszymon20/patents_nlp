@@ -15,3 +15,6 @@ class CFG:
     tokenizer_max_length = 64  # max length found in the whole dataset was 58
     nlastlinear = 1
     wandb = True
+    train_location = './data/train.csv'
+    test_location = './data/test.csv'
+    submission_location = './data/mysubmission.csv'

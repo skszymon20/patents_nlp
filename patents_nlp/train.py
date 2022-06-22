@@ -2,8 +2,7 @@ from torch.optim import Adam, SGD, AdamW
 import wandb
 from patents_nlp.cfg import CFG
 from patents_nlp.model import MyModel
-from preprocess import Dataset, preprocess_train
-from torch.utils.data import DataLoader
+from patents_nlp.preprocess import preprocess_train
 import time
 import copy
 import torch
