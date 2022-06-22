@@ -11,7 +11,7 @@ for model_name in model_names:
     CFG.model_name = model_name
     cfg_dict = {key: value for key, value in CFG.__dict__.items() if not key.startswith('__') and not callable(key)}
     if CFG.wandb:
-        wandb.init(project="patents-nlp-bert", entity='3ai', config=cfg_dict, name=f"testing model: {model_name}")
+        wandb.init(project="patents-nlp-bert", entity='3ai', config=cfg_dict, name=f"First test model: {model_name}")
 
     traindl, validdl = preprocess_train(command='todataloaders')
     mysetup = setup_training(traindl, validdl)
