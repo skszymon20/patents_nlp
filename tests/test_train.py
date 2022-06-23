@@ -2,7 +2,8 @@ from transformers import AdamW, AutoTokenizer
 from patents_nlp.cfg import CFG
 from patents_nlp.model import MyModel
 from patents_nlp.preprocess import Dataset, prepare_datatable, preprocess_train
-from patents_nlp.train import get_optimizer_parameters, get_scheduler, setup_training, train_model
+from patents_nlp.train import get_optimizer_parameters, get_scheduler,\
+    setup_training, train_model
 import torch
 
 
@@ -12,7 +13,8 @@ def test_get_optimizer_params():
     decoderlr = 2e-5
     optparams = get_optimizer_parameters(model, encoderlr, decoderlr)
     assert len(optparams) == 3
-    assert optparams[-1]['params'][-2].shape == torch.Size([1, CFG.hidden_size])
+    assert optparams[-1]['params'][-2].shape == torch.Size([1,
+                                                            CFG.hidden_size])
     assert optparams[-1]['params'][-1].shape == torch.Size([1])
 
 

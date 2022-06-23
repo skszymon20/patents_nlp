@@ -26,4 +26,4 @@ def test_forward():
     for k in X:
         X[k] = X[k].view(1, -1)
     model = MyModel()
-    assert model(X).shape == (1,1)
+    assert model(X).shape == (1, 1)
