@@ -17,5 +17,6 @@ setup(
     ],
     setup_requires=['pycodestyle'],
     tests_require=['pytest'],
+    package_data={"patents_nlp": ["py.typed"], "scipy": ["py.typed"]}
 )
 # https://godatadriven.com/blog/a-practical-guide-to-using-setup-py/

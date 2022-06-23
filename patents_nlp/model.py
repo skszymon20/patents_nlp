@@ -18,7 +18,7 @@ class MyModel(nn.Module):
         self.dropout = nn.Dropout(CFG.dropout)
         self.linear = nn.Linear(CFG.hidden_size, CFG.nlastlinear)
 
-    def forward(self, x: dict) -> torch.tensor:
+    def forward(self, x: dict) -> torch.Tensor:
         x = self.model(**x)
         last_hidden_states = x[0]
         weights = self.attention(last_hidden_states)
