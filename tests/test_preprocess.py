@@ -24,4 +24,3 @@ def test_preprocess_train():
     sampleX = traindl.dataset[0][0]
     assert 'input_ids' in sampleX
     assert sampleX['input_ids'].shape[0] == CFG.tokenizer_max_length
-    print(sampleX)

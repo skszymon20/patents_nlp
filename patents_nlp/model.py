@@ -6,7 +6,14 @@ from patents_nlp.preprocess import preprocess_train
 
 
 class MyModel(nn.Module):
+    """MyModel class that uses Bert base architecture as encoder
+    Than It uses attention based mechanism. It converts all
+    the inputs to single output number determining the similarity
+    between patents.
+    """
     def __init__(self) -> None:
+        """Constructs the model
+        """
         super().__init__()
         self.model = AutoModel.from_pretrained(CFG.model_name)
         self.attention = nn.Sequential(
@@ -19,6 +26,14 @@ class MyModel(nn.Module):
         self.linear = nn.Linear(CFG.hidden_size, CFG.nlastlinear)
 
     def forward(self, x: dict) -> dict:
+        """Implements forward pass of the model
+
+        Args:
+            x (dict): dictonaty of tokenized inputs via call method.
+
+        Returns:
+            dict: single number determining similarity between patents
+        """
         x = self.model(**x)
         last_hidden_states = x[0]
         weights = self.attention(last_hidden_states)

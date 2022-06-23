@@ -2,10 +2,24 @@ import time
 import torch
 import numpy as np
 from patents_nlp.cfg import CFG
+from patents_nlp.model import MyModel
 from patents_nlp.preprocess import preprocess_test
+from torch.utils.data import DataLoader
 
 
-def predict(model, dataloader, device):
+def predict(model: MyModel, dataloader: DataLoader, device: str)\
+        -> np.ndarray:
+    """Performs predictions on the test dataloader
+
+    Args:
+        model (MyModel): Our model from model.py
+        dataloader (torch.utils.data.DataLoader): Dataloader created from test
+            dataset
+        device (str): one of ("gpu:0", "cpu")
+
+    Returns:
+        np.ndarray: array of predictions made by model.
+    """
     since = time.time()
     sigmoid = torch.nn.Sigmoid()
     alllabels = np.array([])
@@ -38,7 +52,13 @@ def predict(model, dataloader, device):
     return allpreds
 
 
-def inference_pipeline(model, device: str = "cpu") -> None:
+def inference_pipeline(model: MyModel, device: str = "cpu") -> None:
+    """Performs inference based on CFG.test_location
+
+    Args:
+        model (MyModel): My Model from model.py
+        device (str, optional): one of ("gpu:0", "cpu"). Defaults to "cpu".
+    """
     dataloader, table = preprocess_test(CFG.test_location, return_df=True)
     predictions = predict(model, dataloader, device)
     table.drop(columns=['text'], inplace=True)

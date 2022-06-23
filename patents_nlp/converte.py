@@ -3,6 +3,15 @@ import os
 
 def to_single_pyfile(infolder: str = "./patents_nlp/",
                      outfile: str = "./allscript.py") -> None:
+    """Converts all files in infolder into single python file that can be
+    Easily submitted for kaggle competition.
+
+    Args:
+        infolder (str, optional): Folder where files be merged are stored.
+            Defaults to "./patents_nlp/".
+        outfile (str, optional): Target output merged filename.
+            Defaults to "./allscript.py".
+    """
     flist = os.listdir(infolder)
     flist = list(filter(lambda s: s != "main.py" and s !=
                         "converte.py" and not s.startswith("_") and
