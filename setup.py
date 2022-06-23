@@ -13,7 +13,8 @@ setup(
         'pycodestyle==2.8.0',
         'mypy==0.950',
         'wandb==0.12.16',
-        'sentencepiece'
+        'sentencepiece',
+        'pytest'
     ],
     setup_requires=['pycodestyle'],
     tests_require=['pytest'],

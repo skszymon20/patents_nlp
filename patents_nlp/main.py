@@ -21,6 +21,8 @@ if __name__ == "__main__":
     traindl, validdl = preprocess_train(
         CFG.train_location, command='todataloaders')
     mysetup = setup_training(traindl, validdl)
+    model, criterion, optimizer, scheduler, dataloaders,\
+        dataset_sizes, device, num_epochs = mysetup
     model, bcelosses, pearsonrlosses = train_model(*mysetup)
     torch.save(model.state_dict(), f'{save_model_name}_weights.pt')
     print(bcelosses)
@@ -33,4 +35,4 @@ if __name__ == "__main__":
         json.dump(pearsonrlosses, fp, indent=4)
     if CFG.wandb:
         wandb.finish()
-    inference_pipeline()
+    inference_pipeline(model, device)
