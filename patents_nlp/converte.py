@@ -1,7 +1,12 @@
 import os
-def to_single_pyfile(infolder="./patents_nlp/", outfile="./allscript.py"):
+
+
+def to_single_pyfile(infolder: str = "./patents_nlp/",
+                     outfile: str = "./allscript.py") -> None:
     flist = os.listdir(infolder)
-    flist = list(filter(lambda s: s != "main.py" and s != "converte.py" and not s.startswith("_") and s!= "cfg.py", flist))
+    flist = list(filter(lambda s: s != "main.py" and s !=
+                        "converte.py" and not s.startswith("_") and
+                        s != "cfg.py", flist))
     flist.append("main.py")
     flist.insert(0, "cfg.py")
     print("file order:", flist)
@@ -16,7 +21,8 @@ def to_single_pyfile(infolder="./patents_nlp/", outfile="./allscript.py"):
                     if len(split_import) == 1:
                         outf.write(line)
                         continue
-                    if split_import[0] == "import" or split_import[0] == "from":
+                    if (split_import[0] == "import" or
+                       split_import[0] == "from"):
                         split_import[-1] = split_import[-1].split('\n')[0]
                         split_import[1] = split_import[1].split('.')[0]
                         if (split_import[1] == "patents_nlp"):
@@ -25,7 +31,8 @@ def to_single_pyfile(infolder="./patents_nlp/", outfile="./allscript.py"):
                             outf.write(line)
                     else:
                         splitline = line.split(' ')[:2]
-                        if splitline[0] == 'if' and splitline[1][:8] == "__name__":
+                        if (splitline[0] == 'if' and
+                           splitline[1][:8] == "__name__"):
                             break
                         outf.write(line)
 

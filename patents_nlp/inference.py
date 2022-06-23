@@ -8,6 +8,7 @@ from patents_nlp.preprocess import preprocess_test
 def predict(model, dataloader, device):
     since = time.time()
     sigmoid = torch.nn.Sigmoid()
+    alllabels = np.array([])
 
     model.eval()   # Set model to evaluate mode
 
@@ -28,14 +29,16 @@ def predict(model, dataloader, device):
         if not alllabels.size:
             alllabels = labels.detach().cpu().numpy()
         else:
-            alllabels = np.concatenate((alllabels, labels.cpu().detach().numpy()))
+            alllabels = np.concatenate(
+                (alllabels, labels.cpu().detach().numpy()))
 
     time_elapsed = time.time() - since
-    print(f'Inference complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
+    print('Inference complete in', end=' ')
+    print(f'{time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
     return allpreds
 
 
-def inference_pipeline(model, device="cpu"):
+def inference_pipeline(model, device: str = "cpu") -> None:
     dataloader, table = preprocess_test(CFG.test_location, return_df=True)
     predictions = predict(model, dataloader, device)
     table.drop(columns=['text'], inplace=True)

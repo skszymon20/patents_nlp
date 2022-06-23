@@ -6,8 +6,9 @@ from patents_nlp.cfg import CFG
 import warnings
 
 
-# TODO: Is there better way to assign subclasses
-# (differentiate A11 from A12 etc-> possible underfitting)
+# DONE: Is there better way to assign subclasses, eg:
+# (differentiate A11 from A12)
+# YES it is, BUT HIGH possibility of underfitting detected
 codes = {
     'A': 'Human Necessities',
     'B': 'Operations and Transport',
@@ -22,13 +23,13 @@ codes = {
 
 
 def prepare_datatable(table: pd.DataFrame,
-                      col_names_returned=['id', 'text', 'score']):
+                      col_names_returned:
+                      list = ['id', 'text', 'score']) -> pd.DataFrame:
     table['context'].replace(r'\d\d', '', regex=True, inplace=True)
     table['context_text'] = table['context'].map(codes)
     table['text'] = table['anchor'] + '[SEP]' + \
         table['target'] + '[SEP]' + table['context_text']
     return table[col_names_returned]
-
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -61,7 +62,9 @@ class Dataset(torch.utils.data.Dataset):
             y = row['score']
         return (X, y)
 
-def preprocess_test(filename='./data/test.csv', command="todataloader", return_df=False):
+
+def preprocess_test(filename: str = './data/test.csv',
+                    command: str = "todataloader", return_df: bool = False):
     test_base = pd.read_csv(filename)  # len=36 rows
     table = prepare_datatable(test_base, ["id", "text"])
     tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
@@ -78,7 +81,9 @@ def preprocess_test(filename='./data/test.csv', command="todataloader", return_d
     else:
         raise ValueError('command must be "todataset" or "todataloader"')
 
-def preprocess_train(filename='./data/train.csv', command="todataloaders", valid_size=0.2):
+
+def preprocess_train(filename: str = './data/train.csv',
+                     command: str = "todataloaders", valid_size: float = 0.2):
     train_base = pd.read_csv(filename)  # len=36473 (rows)
     # Cleaning Datatable to format: id, train text
     # (anchor + target + context_text), score
@@ -95,7 +100,8 @@ def preprocess_train(filename='./data/train.csv', command="todataloaders", valid
     if command == 'todatasets':
         return train_s, val_s
     elif command == 'todataloaders':
-        train_dl = DataLoader(train_s, batch_size=CFG.batch_size, shuffle=True)  # check num workers
+        # check num workers
+        train_dl = DataLoader(train_s, batch_size=CFG.batch_size, shuffle=True)
         valid_dl = DataLoader(val_s, batch_size=CFG.batch_size, shuffle=True)
         return train_dl, valid_dl
     else:
