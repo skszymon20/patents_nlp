@@ -33,4 +33,5 @@ if __name__ == "__main__":
         json.dump(pearsonrlosses, fp, indent=4)
     if CFG.wandb:
         wandb.finish()
-    inference_pipeline()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    inference_pipeline(model, device)

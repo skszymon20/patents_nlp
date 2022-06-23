@@ -1,19 +1,22 @@
 import time
 import torch
+from torch.utils.data import DataLoader
+from model import MyModel
 import numpy as np
+import numpy.typing as npt
 from patents_nlp.cfg import CFG
 from patents_nlp.preprocess import preprocess_test
 
 
-def predict(model, dataloader, device):
+def predict(model: MyModel,
+            dataloader: DataLoader, device: str) -> npt.NDArray:
     since = time.time()
     sigmoid = torch.nn.Sigmoid()
-    alllabels = np.array([])
+    alllabels = np.array([])  # type: npt.NDArray
 
     model.eval()   # Set model to evaluate mode
 
-    allpreds = np.array([])
-    alllabels = np.array([])
+    allpreds = np.array([])  # type: npt.NDArray
     # Iterate over data.
     for inputs, labels in dataloader:
         for k in inputs:
@@ -38,7 +41,7 @@ def predict(model, dataloader, device):
     return allpreds
 
 
-def inference_pipeline(model, device: str = "cpu") -> None:
+def inference_pipeline(model: MyModel, device: str = "cpu") -> None:
     dataloader, table = preprocess_test(CFG.test_location, return_df=True)
     predictions = predict(model, dataloader, device)
     table.drop(columns=['text'], inplace=True)

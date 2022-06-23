@@ -2,7 +2,8 @@ import os
 
 
 def to_single_pyfile(infolder: str = "./patents_nlp/",
-                     outfile: str = "./allscript.py") -> None:
+                     outfile: str = "/home/user/Desktop/all_script.py"
+                     ) -> None:
     flist = os.listdir(infolder)
     flist = list(filter(lambda s: s != "main.py" and s !=
                         "converte.py" and not s.startswith("_") and

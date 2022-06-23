@@ -2,8 +2,11 @@ import torch
 from torch.utils.data import DataLoader
 import pandas as pd
 from transformers import AutoTokenizer
+from transformers.models.bert.tokenization_bert_fast \
+    import BertTokenizerFast
 from patents_nlp.cfg import CFG
 import warnings
+from typing import Union
 
 
 # DONE: Is there better way to assign subclasses, eg:
@@ -33,15 +36,17 @@ def prepare_datatable(table: pd.DataFrame,
 
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, table: pd.DataFrame, tokenizer):
+    def __init__(self, table: pd.DataFrame,
+                 tokenizer: BertTokenizerFast) -> None:
         self.table = table
         self.tokenizer = tokenizer
 
-    def __len__(self):
+    def __len__(self) -> int:
         'Denotes the total number of samples'
         return len(self.table)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> tuple:
+        # transformers.tokenization_utils_base.BatchEncoding, np.float64
         'Generates one sample of data'
         # Select sample
         row = self.table.iloc[index]
@@ -64,7 +69,9 @@ class Dataset(torch.utils.data.Dataset):
 
 
 def preprocess_test(filename: str = './data/test.csv',
-                    command: str = "todataloader", return_df: bool = False):
+                    command: str = "todataloader",
+                    return_df: bool = False
+                    ) -> Union[Dataset, tuple, DataLoader]:
     test_base = pd.read_csv(filename)  # len=36 rows
     table = prepare_datatable(test_base, ["id", "text"])
     tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
@@ -83,7 +90,8 @@ def preprocess_test(filename: str = './data/test.csv',
 
 
 def preprocess_train(filename: str = './data/train.csv',
-                     command: str = "todataloaders", valid_size: float = 0.2):
+                     command: str = "todataloaders",
+                     valid_size: float = 0.2) -> Union[DataLoader, tuple]:
     train_base = pd.read_csv(filename)  # len=36473 (rows)
     # Cleaning Datatable to format: id, train text
     # (anchor + target + context_text), score

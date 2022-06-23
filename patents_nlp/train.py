@@ -8,12 +8,18 @@ import copy
 import torch
 from transformers import get_linear_schedule_with_warmup
 from transformers import get_cosine_schedule_with_warmup
+from torch.optim.lr_scheduler import LambdaLR
+from torch.utils.data.dataloader import DataLoader
+from torch.nn.modules.loss import BCEWithLogitsLoss
 
 import numpy as np
+import numpy.typing as npt
 from scipy.stats import pearsonr
 
 
-def get_optimizer_parameters(model, encoder_lr, decoder_lr, weight_decay=0.0):
+def get_optimizer_parameters(model: MyModel, encoder_lr: float,
+                             decoder_lr: float,
+                             weight_decay: float = 0.0) -> list:
     no_decay = ["bias", "LayerNorm.bias", "LayerNorm.weight"]
     optimizer_parameters = [
         {'params': [p for n, p in model.model.named_parameters()
@@ -29,7 +35,8 @@ def get_optimizer_parameters(model, encoder_lr, decoder_lr, weight_decay=0.0):
     return optimizer_parameters
 
 
-def get_scheduler(cfg, optimizer, num_train_steps):
+def get_scheduler(cfg: CFG, optimizer: AdamW,
+                  num_train_steps: int) -> LambdaLR:
     if CFG.scheduler == 'linear':
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=cfg.num_warmup_steps,
@@ -43,15 +50,17 @@ def get_scheduler(cfg, optimizer, num_train_steps):
     return scheduler
 
 
-def train_model(model, criterion, optimizer, scheduler,
-                dataloaders, dataset_sizes, device, num_epochs=25):
+def train_model(model: MyModel, criterion: BCEWithLogitsLoss,
+                optimizer: AdamW, scheduler: LambdaLR,
+                dataloaders: dict, dataset_sizes: dict, device: torch.device,
+                num_epochs: int = 25) -> tuple:
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_personr = 0.0
     sigmoid = torch.nn.Sigmoid()
-    bcelosses = {"train": [], "val": []}
-    pearsonrlosses = {"train": [], "val": []}
+    bcelosses = {"train": [], "val": []}  # type: dict
+    pearsonrlosses = {"train": [], "val": []}  # type: dict
 
     for epoch in range(num_epochs):
         print(f'Epoch {epoch}/{num_epochs - 1}')
@@ -66,8 +75,8 @@ def train_model(model, criterion, optimizer, scheduler,
 
             running_loss = 0.0
 
-            allpreds = np.array([])
-            alllabels = np.array([])
+            allpreds = np.array([])  # type: npt.NDArray
+            alllabels = np.array([])  # type: npt.NDArray
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
                 for k in inputs:
@@ -134,13 +143,16 @@ def train_model(model, criterion, optimizer, scheduler,
     return model, bcelosses, pearsonrlosses
 
 
-def setup_training(traindl, validdl):
+def setup_training(traindl: DataLoader,
+                   validdl: DataLoader) -> tuple:
     model = MyModel()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
     dataloaders = {"val": validdl, "train": traindl}
-    dataset_sizes = {"val": len(validdl.dataset),
-                     "train": len(traindl.dataset)}
+    # Due to the bug in the mypy len() checking leads to error so ignore:
+    # https://github.com/python/mypy/issues/3187
+    dataset_sizes = {"val": len(validdl.dataset),  # type: ignore
+                     "train": len(traindl.dataset)}  # type: ignore
     optimizer_parameters = get_optimizer_parameters(
         model, CFG.encoder_lr, CFG.decoder_lr)
     optimizer = AdamW(optimizer_parameters, lr=CFG.encoder_lr,
