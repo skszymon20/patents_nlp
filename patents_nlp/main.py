@@ -16,7 +16,7 @@ if __name__ == "__main__":
     ) if not key.startswith('__') and not callable(key)}
     if CFG.wandb:
         wandb.init(project="patents-nlp-bert", entity='3ai',
-                config=cfg_dict, name=f"First test model: {model_name}")
+                   config=cfg_dict, name=f"First test model: {model_name}")
 
     traindl, validdl = preprocess_train(
         CFG.train_location, command='todataloaders')
