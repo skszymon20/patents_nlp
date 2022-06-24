@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>patents_nlp.preprocess API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>patents_nlp.preprocess</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import Union
+from typing import Tuple
+import torch
+from torch.utils.data import DataLoader
+import pandas as pd
+from transformers import AutoTokenizer
+import transformers
+from patents_nlp.cfg import CFG
+import warnings
+
+
+# DONE: Is there better way to assign subclasses, eg:
+# (differentiate A11 from A12)
+# YES it is, BUT HIGH possibility of underfitting detected
+codes = {
+    &#39;A&#39;: &#39;Human Necessities&#39;,
+    &#39;B&#39;: &#39;Operations and Transport&#39;,
+    &#39;C&#39;: &#39;Chemistry and Metallurgy&#39;,
+    &#39;D&#39;: &#39;Textiles&#39;,
+    &#39;E&#39;: &#39;Fixed Constructions&#39;,
+    &#39;F&#39;: &#39;Mechanical Engineering&#39;,
+    &#39;G&#39;: &#39;Physics&#39;,
+    &#39;H&#39;: &#39;Electricity&#39;,
+    &#39;Y&#39;: &#39;Emerging Cross-Sectional Technologi&#39;,
+}
+
+
+def prepare_datatable(table: pd.DataFrame,
+                      col_names_returned:
+                      list = [&#39;id&#39;, &#39;text&#39;, &#39;score&#39;]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Preprocesses datatable. Concatenates anchor, target and context.
+
+    Args:
+        table (pd.DataFrame): input dataset
+        col_names_returned (list, optional): columns to be returned.
+            Defaults to [&#39;id&#39;, &#39;text&#39;, &#39;score&#39;].
+
+    Returns:
+        pd.DataFrame: dataframe with concatenated text column representing
+            anchot + target + context_text
+    &#34;&#34;&#34;
+    table[&#39;context&#39;].replace(r&#39;\d\d&#39;, &#39;&#39;, regex=True, inplace=True)
+    table[&#39;context_text&#39;] = table[&#39;context&#39;].map(codes)
+    table[&#39;text&#39;] = table[&#39;anchor&#39;] + &#39;[SEP]&#39; + \
+        table[&#39;target&#39;] + &#39;[SEP]&#39; + table[&#39;context_text&#39;]
+    return table[col_names_returned]
+
+
+class Dataset(torch.utils.data.Dataset):
+    &#34;&#34;&#34;Implements custom pytorch dataset. Inherits from
+    torch.utils.data.Dataset.
+    &#34;&#34;&#34;
+    def __init__(self, table: pd.DataFrame,
+                 tokenizer: transformers.PreTrainedTokenizerBase):
+        &#34;&#34;&#34;Constructs dataset object
+
+        Args:
+            table (pd.DataFrame): input dataframe
+            tokenizer (transformers.PreTrainedTokenizerBase): tokenizer to be
+                used during __getitem__ method call
+        &#34;&#34;&#34;
+        self.table = table
+        self.tokenizer = tokenizer
+
+    def __len__(self) -&gt; int:
+        &#34;&#34;&#34;Denotes the total number of samples&#34;&#34;&#34;
+        return len(self.table)
+
+    def __getitem__(self, index: int) -&gt; Tuple[dict, torch.Tensor]:
+        &#34;&#34;&#34;Returns one item from the dataset given its id.
+
+        Args:
+            index (int): index of the item
+
+        Returns:
+            Tuple[Dict, Torch.tensor]: X, y to be used during training.
+                in case of test dataset it returns torch.tensor([]) as y.
+        &#34;&#34;&#34;
+        # Select sample
+        row = self.table.iloc[index]
+
+        # Load data and get label
+        X = self.tokenizer(
+            row[&#39;text&#39;], padding=&#39;max_length&#39;,
+            max_length=CFG.tokenizer_max_length, add_special_tokens=True,
+            return_offsets_mapping=False, return_tensors=&#39;pt&#39;
+        )
+        for k in X:
+            X[k] = X[k].squeeze()
+        if &#39;score&#39; not in row.index:
+            warnings.warn(&#34;y will be set to empty tensor as score column was\
+                no in the input dataframe.\
+                It is expected if You are making test dataset.&#34;)
+            y = torch.tensor([])
+        else:
+            y = row[&#39;score&#39;]
+        return (X, y)
+
+
+def preprocess_test(filename: str = &#39;./data/test.csv&#39;,
+                    command: str = &#34;todataloader&#34;, return_df: bool = False)\
+                        -&gt; Union[Dataset, tuple, DataLoader]:
+    &#34;&#34;&#34;preprocesses test dataset to return dataloader or dataset
+
+    Args:
+        filename (str): test dataset location
+        command (str): whether to convert to dataloader or to dataset.
+            one of (&#34;todataloader&#34;, &#34;todataset&#34;)
+        return_df: whether to return dataframe (both with dataset or
+            dataloader)
+
+    Raises:
+        ValueError: if command != &#34;todataloader&#34; or &#34;todataset&#34;
+
+    Returns:
+        (Dataset or Dataloader) and may return table.
+        datasets type: torch.utils.data.Dataset
+        dataloaders type: torch.utils.data.DataLoader
+    &#34;&#34;&#34;
+    test_base = pd.read_csv(filename)  # len=36 rows
+    table = prepare_datatable(test_base, [&#34;id&#34;, &#34;text&#34;])
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
+    test_ds = Dataset(table, tokenizer)
+    if command == &#39;todataset&#39;:
+        if return_df:
+            return test_ds, table
+        return test_ds
+    elif command == &#39;todataloader&#39;:
+        test_dl = DataLoader(test_ds, batch_size=CFG.batch_size, shuffle=False)
+        if return_df:
+            return test_dl, table
+        return test_dl
+    else:
+        raise ValueError(&#39;command must be &#34;todataset&#34; or &#34;todataloader&#34;&#39;)
+
+
+def preprocess_train(filename: str = &#39;./data/train.csv&#39;,
+                     command: str = &#34;todataloaders&#34;, valid_size: float = 0.2)\
+                         -&gt; Union[DataLoader, tuple]:
+    &#34;&#34;&#34;Preproceses dataset given its location
+
+    Args:
+        filename (str): train dataset location
+        command (str): whether to convert to dataloaders or to datasets.
+            one of (&#34;todataloaders&#34;, &#34;todatasets&#34;)
+
+    Raises:
+        ValueError: if command != &#34;todataloaders&#34; or to &#34;todatasets&#34;
+
+    Returns:
+        (train and validation datasets) or (train and validation dataloaders)
+        datasets type: torch.utils.data.Dataset
+        dataloaders type: torch.utils.data.DataLoader
+    &#34;&#34;&#34;
+    train_base = pd.read_csv(filename)  # len=36473 (rows)
+    # Cleaning Datatable to format: id, train text
+    # (anchor + target + context_text), score
+    table = prepare_datatable(train_base)
+    # Train/Validation split
+    table = table.sample(frac=1, random_state=123)
+    sp0 = int(table.shape[0] * (1-valid_size))
+    train, validation = table[:sp0], table[sp0:]
+    # Initialize some tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
+    # Dataset initialization and test
+    train_s = Dataset(train, tokenizer)
+    val_s = Dataset(validation, tokenizer)
+    if command == &#39;todatasets&#39;:
+        return train_s, val_s
+    elif command == &#39;todataloaders&#39;:
+        # check num workers
+        train_dl = DataLoader(train_s, batch_size=CFG.batch_size, shuffle=True)
+        valid_dl = DataLoader(val_s, batch_size=CFG.batch_size, shuffle=True)
+        return train_dl, valid_dl
+    else:
+        raise ValueError(&#39;command must be &#34;todatasets&#34; or &#34;todataloaders&#34;&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="patents_nlp.preprocess.prepare_datatable"><code class="name flex">
+<span>def <span class="ident">prepare_datatable</span></span>(<span>table: pandas.core.frame.DataFrame, col_names_returned: list = ['id', 'text', 'score']) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Preprocesses datatable. Concatenates anchor, target and context.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>table</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>input dataset</dd>
+<dt><strong><code>col_names_returned</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>columns to be returned.
+Defaults to ['id', 'text', 'score'].</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>pd.DataFrame</code></dt>
+<dd>dataframe with concatenated text column representing
+anchot + target + context_text</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_datatable(table: pd.DataFrame,
+                      col_names_returned:
+                      list = [&#39;id&#39;, &#39;text&#39;, &#39;score&#39;]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Preprocesses datatable. Concatenates anchor, target and context.
+
+    Args:
+        table (pd.DataFrame): input dataset
+        col_names_returned (list, optional): columns to be returned.
+            Defaults to [&#39;id&#39;, &#39;text&#39;, &#39;score&#39;].
+
+    Returns:
+        pd.DataFrame: dataframe with concatenated text column representing
+            anchot + target + context_text
+    &#34;&#34;&#34;
+    table[&#39;context&#39;].replace(r&#39;\d\d&#39;, &#39;&#39;, regex=True, inplace=True)
+    table[&#39;context_text&#39;] = table[&#39;context&#39;].map(codes)
+    table[&#39;text&#39;] = table[&#39;anchor&#39;] + &#39;[SEP]&#39; + \
+        table[&#39;target&#39;] + &#39;[SEP]&#39; + table[&#39;context_text&#39;]
+    return table[col_names_returned]</code></pre>
+</details>
+</dd>
+<dt id="patents_nlp.preprocess.preprocess_test"><code class="name flex">
+<span>def <span class="ident">preprocess_test</span></span>(<span>filename: str = './data/test.csv', command: str = 'todataloader', return_df: bool = False) ‑> Union[<a title="patents_nlp.preprocess.Dataset" href="#patents_nlp.preprocess.Dataset">Dataset</a>, tuple, torch.utils.data.dataloader.DataLoader]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>preprocesses test dataset to return dataloader or dataset</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>test dataset location</dd>
+<dt><strong><code>command</code></strong> :&ensp;<code>str</code></dt>
+<dd>whether to convert to dataloader or to dataset.
+one of ("todataloader", "todataset")</dd>
+<dt><strong><code>return_df</code></strong></dt>
+<dd>whether to return dataframe (both with dataset or
+dataloader)</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>if command != "todataloader" or "todataset"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>(Dataset or Dataloader) and may return table.</dt>
+<dt><code>datasets type</code></dt>
+<dd>torch.utils.data.Dataset</dd>
+<dt><code>dataloaders type</code></dt>
+<dd>torch.utils.data.DataLoader</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def preprocess_test(filename: str = &#39;./data/test.csv&#39;,
+                    command: str = &#34;todataloader&#34;, return_df: bool = False)\
+                        -&gt; Union[Dataset, tuple, DataLoader]:
+    &#34;&#34;&#34;preprocesses test dataset to return dataloader or dataset
+
+    Args:
+        filename (str): test dataset location
+        command (str): whether to convert to dataloader or to dataset.
+            one of (&#34;todataloader&#34;, &#34;todataset&#34;)
+        return_df: whether to return dataframe (both with dataset or
+            dataloader)
+
+    Raises:
+        ValueError: if command != &#34;todataloader&#34; or &#34;todataset&#34;
+
+    Returns:
+        (Dataset or Dataloader) and may return table.
+        datasets type: torch.utils.data.Dataset
+        dataloaders type: torch.utils.data.DataLoader
+    &#34;&#34;&#34;
+    test_base = pd.read_csv(filename)  # len=36 rows
+    table = prepare_datatable(test_base, [&#34;id&#34;, &#34;text&#34;])
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
+    test_ds = Dataset(table, tokenizer)
+    if command == &#39;todataset&#39;:
+        if return_df:
+            return test_ds, table
+        return test_ds
+    elif command == &#39;todataloader&#39;:
+        test_dl = DataLoader(test_ds, batch_size=CFG.batch_size, shuffle=False)
+        if return_df:
+            return test_dl, table
+        return test_dl
+    else:
+        raise ValueError(&#39;command must be &#34;todataset&#34; or &#34;todataloader&#34;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="patents_nlp.preprocess.preprocess_train"><code class="name flex">
+<span>def <span class="ident">preprocess_train</span></span>(<span>filename: str = './data/train.csv', command: str = 'todataloaders', valid_size: float = 0.2) ‑> Union[torch.utils.data.dataloader.DataLoader, tuple]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Preproceses dataset given its location</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>train dataset location</dd>
+<dt><strong><code>command</code></strong> :&ensp;<code>str</code></dt>
+<dd>whether to convert to dataloaders or to datasets.
+one of ("todataloaders", "todatasets")</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>if command != "todataloaders" or to "todatasets"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>(train and validation datasets) or (train and validation dataloaders)</dt>
+<dt><code>datasets type</code></dt>
+<dd>torch.utils.data.Dataset</dd>
+<dt><code>dataloaders type</code></dt>
+<dd>torch.utils.data.DataLoader</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def preprocess_train(filename: str = &#39;./data/train.csv&#39;,
+                     command: str = &#34;todataloaders&#34;, valid_size: float = 0.2)\
+                         -&gt; Union[DataLoader, tuple]:
+    &#34;&#34;&#34;Preproceses dataset given its location
+
+    Args:
+        filename (str): train dataset location
+        command (str): whether to convert to dataloaders or to datasets.
+            one of (&#34;todataloaders&#34;, &#34;todatasets&#34;)
+
+    Raises:
+        ValueError: if command != &#34;todataloaders&#34; or to &#34;todatasets&#34;
+
+    Returns:
+        (train and validation datasets) or (train and validation dataloaders)
+        datasets type: torch.utils.data.Dataset
+        dataloaders type: torch.utils.data.DataLoader
+    &#34;&#34;&#34;
+    train_base = pd.read_csv(filename)  # len=36473 (rows)
+    # Cleaning Datatable to format: id, train text
+    # (anchor + target + context_text), score
+    table = prepare_datatable(train_base)
+    # Train/Validation split
+    table = table.sample(frac=1, random_state=123)
+    sp0 = int(table.shape[0] * (1-valid_size))
+    train, validation = table[:sp0], table[sp0:]
+    # Initialize some tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(CFG.model_name)
+    # Dataset initialization and test
+    train_s = Dataset(train, tokenizer)
+    val_s = Dataset(validation, tokenizer)
+    if command == &#39;todatasets&#39;:
+        return train_s, val_s
+    elif command == &#39;todataloaders&#39;:
+        # check num workers
+        train_dl = DataLoader(train_s, batch_size=CFG.batch_size, shuffle=True)
+        valid_dl = DataLoader(val_s, batch_size=CFG.batch_size, shuffle=True)
+        return train_dl, valid_dl
+    else:
+        raise ValueError(&#39;command must be &#34;todatasets&#34; or &#34;todataloaders&#34;&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="patents_nlp.preprocess.Dataset"><code class="flex name class">
+<span>class <span class="ident">Dataset</span></span>
+<span>(</span><span>table: pandas.core.frame.DataFrame, tokenizer: transformers.tokenization_utils_base.PreTrainedTokenizerBase)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implements custom pytorch dataset. Inherits from
+torch.utils.data.Dataset.</p>
+<p>Constructs dataset object</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>table</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>input dataframe</dd>
+<dt><strong><code>tokenizer</code></strong> :&ensp;<code>transformers.PreTrainedTokenizerBase</code></dt>
+<dd>tokenizer to be
+used during <strong>getitem</strong> method call</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Dataset(torch.utils.data.Dataset):
+    &#34;&#34;&#34;Implements custom pytorch dataset. Inherits from
+    torch.utils.data.Dataset.
+    &#34;&#34;&#34;
+    def __init__(self, table: pd.DataFrame,
+                 tokenizer: transformers.PreTrainedTokenizerBase):
+        &#34;&#34;&#34;Constructs dataset object
+
+        Args:
+            table (pd.DataFrame): input dataframe
+            tokenizer (transformers.PreTrainedTokenizerBase): tokenizer to be
+                used during __getitem__ method call
+        &#34;&#34;&#34;
+        self.table = table
+        self.tokenizer = tokenizer
+
+    def __len__(self) -&gt; int:
+        &#34;&#34;&#34;Denotes the total number of samples&#34;&#34;&#34;
+        return len(self.table)
+
+    def __getitem__(self, index: int) -&gt; Tuple[dict, torch.Tensor]:
+        &#34;&#34;&#34;Returns one item from the dataset given its id.
+
+        Args:
+            index (int): index of the item
+
+        Returns:
+            Tuple[Dict, Torch.tensor]: X, y to be used during training.
+                in case of test dataset it returns torch.tensor([]) as y.
+        &#34;&#34;&#34;
+        # Select sample
+        row = self.table.iloc[index]
+
+        # Load data and get label
+        X = self.tokenizer(
+            row[&#39;text&#39;], padding=&#39;max_length&#39;,
+            max_length=CFG.tokenizer_max_length, add_special_tokens=True,
+            return_offsets_mapping=False, return_tensors=&#39;pt&#39;
+        )
+        for k in X:
+            X[k] = X[k].squeeze()
+        if &#39;score&#39; not in row.index:
+            warnings.warn(&#34;y will be set to empty tensor as score column was\
+                no in the input dataframe.\
+                It is expected if You are making test dataset.&#34;)
+            y = torch.tensor([])
+        else:
+            y = row[&#39;score&#39;]
+        return (X, y)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.utils.data.dataset.Dataset</li>
+<li>typing.Generic</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="patents_nlp" href="index.html">patents_nlp</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="patents_nlp.preprocess.prepare_datatable" href="#patents_nlp.preprocess.prepare_datatable">prepare_datatable</a></code></li>
+<li><code><a title="patents_nlp.preprocess.preprocess_test" href="#patents_nlp.preprocess.preprocess_test">preprocess_test</a></code></li>
+<li><code><a title="patents_nlp.preprocess.preprocess_train" href="#patents_nlp.preprocess.preprocess_train">preprocess_train</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="patents_nlp.preprocess.Dataset" href="#patents_nlp.preprocess.Dataset">Dataset</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
