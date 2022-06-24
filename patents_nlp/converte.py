@@ -16,8 +16,8 @@ def to_single_pyfile(infolder: str = "./patents_nlp/",
     flist = list(filter(lambda s: s != "main.py" and s !=
                         "converte.py" and not s.startswith("_") and
                         s != "cfg.py", flist))
-    flist.append("main.py")
     flist.insert(0, "cfg.py")
+    flist.append("main.py")
     print("file order:", flist)
     with open(outfile, "w") as outf:
         for file in flist:
@@ -39,6 +39,9 @@ def to_single_pyfile(infolder: str = "./patents_nlp/",
                         else:
                             outf.write(line)
                     else:
+                        if file == "main.py":
+                            outf.write(line)
+                            continue
                         splitline = line.split(' ')[:2]
                         if (splitline[0] == 'if' and
                            splitline[1][:8] == "__name__"):
